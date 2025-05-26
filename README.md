@@ -1,4 +1,6 @@
-# 3_RF_Project
+# 3_RF_Project (draft)
+
+**Disclaimer:** Most of the text on this readme file was copied and pasted from Luke's readme file, with the exception for the code that I inserted my own, which is similar to his, because, well...it was about learning from his code! I noticed that his Dataset - perhaps from the time filming this course - was slightly different from the version I used by the time I was taking the course, so I made some adjustments when it came the time to prepare the visualizations. It is my intention and plan to come back to this file to read it carefully, add my own comments, what I struggled with, and any "wow" moments the data might have given me.
 
 # Overview
 
@@ -123,7 +125,35 @@ To find how skills are trending in 2023 for Data Analysts, I filtered data analy
 View my notebook with detailed steps here: [3_Skills_Trend](3_Skills_Trend.ipynb).
 
 ### Visualize Data
+```# For the plotting, we only want the first 7 rows (I'm adding 2 columns because Luke's dataset is looking differenr from mine...Power BI is in 7th place). For this we're going to use the .iloc method 
+#  .iloc[:, :7] -> means all rows, but only 7 columns
+no_of_colums = 7
+df_plot = df_DA_US_percent.iloc[:, :no_of_colums]
 
+sns.lineplot(data=df_plot, dashes=False, palette='tab10')
+sns.set_theme(style='ticks')
+sns.despine()
+
+plt.title('Trending Top Skills for Data Analysis in the US')
+plt.ylabel('Likelihood in Job Posting')
+plt.xlabel('2023')
+plt.legend().remove()
+
+# To format the y-axis with percentage
+from matplotlib.ticker import PercentFormatter
+ax = plt.gca()
+ax.yaxis.set_major_formatter(PercentFormatter(decimals=0)) 
+
+# To add the text to the lines, adjusting them to avoid overlap
+from adjustText import adjust_text
+texts = []
+for i in range(no_of_colums):
+    texts.append(
+        plt.text(11.2, df_plot.iloc[-1, i], df_plot.columns[i])
+    )
+adjust_text(texts, arrowprops=dict(arrowstyle='->', color='gray'))
+
+plt.show()
 ```python
 
 from matplotlib.ticker import PercentFormatter
@@ -139,7 +169,7 @@ plt.show()
 
 ### Results
 
-![Trending Top Skills for Data Analysts in the US](images/Trending_Top_Skills_for_Data_Analysts_in_the_US.png)  
+![Trending Top Skills for Data Analysts in the US](RF_images/In-demand_skills.png)  
 *Bar graph visualizing the trending top skills for data analysts in the US in 2023.*
 
 ### Insights:
@@ -156,8 +186,14 @@ View my notebook with detailed steps here: [4_Salary_Analysis](4_Salary_Analysis
 #### Visualize Data 
 
 ```python
+# Plotting with seaborn
 sns.boxplot(data=df_US_top6, x='salary_year_avg', y='job_title_short', order=job_order)
+sns.set_theme(style='ticks')
 
+plt.title('Salary Distributions in the United States')
+plt.xlabel('Yearly Salary (USD)')
+plt.ylabel('')
+plt.xlim(0, 600_000)
 ticks_x = plt.FuncFormatter(lambda y, pos: f'${int(y/1000)}K')
 plt.gca().xaxis.set_major_formatter(ticks_x)
 plt.show()
@@ -166,7 +202,7 @@ plt.show()
 
 #### Results
 
-![Salary Distributions of Data Jobs in the US](images/Salary_Distributions_of_Data_Jobs_in_the_US.png)  
+![Salary Distributions of Data Jobs in the US](RF_images/salary_boxplot.png)  
 *Box plot visualizing the salary distributions for the top 6 data job titles.*
 
 #### Insights
@@ -185,14 +221,31 @@ Next, I narrowed my analysis and focused only on data analyst roles. I looked at
 
 ```python
 
-fig, ax = plt.subplots(2, 1)  
-
+# Plotting
+fig, ax = plt.subplots(2,1)
+sns.set_theme(style='ticks')
 # Top 10 Highest Paid Skills for Data Analysts
-sns.barplot(data=df_DA_top_pay, x='median', y=df_DA_top_pay.index, hue='median', ax=ax[0], palette='dark:b_r')
 
-# Top 10 Most In-Demand Skills for Data Analystsr')
-sns.barplot(data=df_DA_skills, x='median', y=df_DA_skills.index, hue='median', ax=ax[1], palette='light:b')
+sns.barplot(data=df_DA_top_pay, x='median', y=df_DA_top_pay.index, ax=ax[0], hue='median', palette='dark:b_r') #the _r in the palette parameter reverts the colour
+ax[0].legend().remove()
+# df_DA_top_pay[::-1].plot(kind='barh', y='median', ax=ax[0], legend=False)
+ax[0].set_title('Top 10 Highest Paid Skills for Data Analysts')
+ax[0].set_xlabel('')
+ax[0].set_ylabel('')
+ax[0].xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'${int(x/1000)}K'))
 
+# Top 10 Most in Demand Skills for Data Analysts
+
+sns.barplot(data=df_DA_skills, x='median', y=df_DA_skills.index, ax=ax[1], hue='median', palette='light:b')
+ax[1].legend().remove()
+# df_DA_skills[::-1].plot(kind='barh', y='median', ax=ax[1], legend=False)
+ax[1].set_title('Top 10 Most in Demand Skills for Data Analysts')
+ax[1].set_xlabel('Median Salary (USD)')
+ax[1].set_ylabel('')
+ax[1].set_xlim(ax[0].get_xlim()) #set the same x-axis limits as the first plot
+ax[1].xaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'${int(x/1000)}K'))
+
+plt.tight_layout()
 plt.show()
 
 ```
@@ -200,7 +253,7 @@ plt.show()
 #### Results
 Here's the breakdown of the highest-paid & most in-demand skills for data analysts in the US:
 
-![The Highest Paid & Most In-Demand Skills for Data Analysts in the US](images/Highest_Paid_and_Most_In_Demand_Skills_for_Data_Analysts_in_the_US.png)
+![The Highest Paid & Most In-Demand Skills for Data Analysts in the US](RF_images/highest_paid_most_demand.png)
 *Two separate bar graphs visualizing the highest paid skills and most in-demand skills for data analysts in the US.*
 
 #### Insights:
@@ -221,16 +274,33 @@ View my notebook with detailed steps here: [5_Optimal_Skills](5_Optimal_Skills.i
 
 ```python
 from adjustText import adjust_text
-import matplotlib.pyplot as plt
 
 plt.scatter(df_DA_skills_high_demand['skill_percent'], df_DA_skills_high_demand['median_salary'])
-plt.show()
+plt.xlabel('Percent of Data Analyst Jobs')
+plt.ylabel('Median Salary ($USD)')  # Assuming this is the label you want for y-axis
+plt.title('Most Optimal Skills for Data Analysts in the US')
 
+# Get current axes, set limits, and format axes
+ax = plt.gca() #gca -> Get Current Axis
+ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, pos: f'${int(y/1000)}K'))  # Example formatting y-axis
+# Import the Percent Formatter from matplotlib.ticket
+from matplotlib.ticker import PercentFormatter
+ax.xaxis.set_major_formatter(PercentFormatter(decimals=0))
+
+# Add labels to points and collect them in a list
+texts = []
+for i, txt in enumerate(df_DA_skills_high_demand.index):
+    texts.append(plt.text(df_DA_skills_high_demand['skill_percent'].iloc[i], df_DA_skills_high_demand['median_salary'].iloc[i], " " + txt))
+
+# Adjust text to avoid overlap and add arrows
+adjust_text(texts, arrowprops=dict(arrowstyle='->', color='gray'))
+
+plt.show()
 ```
 
 #### Results
 
-![Most Optimal Skills for Data Analysts in the US](images/Most_Optimal_Skills_for_Data_Analysts_in_the_US.png)    
+![Most Optimal Skills for Data Analysts in the US](RF_images/Most_Optimal_Skills_for_Data_Analysts_in_the_US.png)    
 *A scatter plot visualizing the most optimal skills (high paying & high demand) for data analysts in the US.*
 
 #### Insights:
@@ -248,24 +318,58 @@ Let's visualize the different technologies as well in the graph. We'll add color
 #### Visualize Data
 
 ```python
-from matplotlib.ticker import PercentFormatter
+# So, now, we have the Data Frame that we need to plot! (we're re-using the previous code and improving on it)
 
-# Create a scatter plot
-scatter = sns.scatterplot(
-    data=df_DA_skills_tech_high_demand,
+from adjustText import adjust_text # we're importing the adjust_text to prevent overlap on the words 
+
+sns.scatterplot(
+    data=df_plot,
     x='skill_percent',
     y='median_salary',
-    hue='technology',  # Color by technology
-    palette='bright',  # Use a bright palette for distinct colors
-    legend='full'  # Ensure the legend is shown
+    hue='technology'
 )
+
+sns.despine() #removing the border around the chart
+sns.set_theme(style='ticks')
+
+# Prepare texts for adjustText, using df_plot for both coordinates and labels
+texts = []
+for i, row in df_plot.iterrows():
+    texts.append(
+        plt.text(row['skill_percent'], row['median_salary'], " " + str(row['skills']))
+    )
+
+# Adjust text to avoid overlap
+adjust_text(
+    texts,
+    arrowprops=dict(arrowstyle='->', color='gray'),
+    expand_text=(1.2, 1.4),
+    expand_points=(1.2, 1.4),
+    force_text=0.5,
+    force_points=0.5,
+    verbose=False #removes some unecessary debug output
+)
+
+# Set axis labels, title, and legend
+plt.xlabel('Percent of Data Analyst Jobs')
+plt.ylabel('Median Yearly Salary')
+plt.title('Most Optimal Skills for Data Analysts in the US')
+plt.legend(title='Technology')
+
+from matplotlib.ticker import PercentFormatter
+ax = plt.gca()
+ax.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, pos: f'${int(y/1000)}K'))
+ax.xaxis.set_major_formatter(PercentFormatter(decimals=0))
+
+# Adjust layout and display plot 
+plt.tight_layout()
 plt.show()
 
 ```
 
 #### Results
 
-![Most Optimal Skills for Data Analysts in the US with Coloring by Technology](images/Most_Optimal_Skills_for_Data_Analysts_in_the_US_with_Coloring_by_Technology.png)  
+![Most Optimal Skills for Data Analysts in the US with Coloring by Technology](RF_images/Most_Optimal_Skills_for_Data_Analysts_in_the_US_colored_by_technology.png)  
 *A scatter plot visualizing the most optimal skills (high paying & high demand) for data analysts in the US with color labels for technology.*
 
 #### Insights:
