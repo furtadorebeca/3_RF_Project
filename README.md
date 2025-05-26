@@ -1,12 +1,12 @@
 # 3_RF_Project (draft)
 
-**Disclaimer:** Most of the text on this readme file was copied and pasted from Luke's readme file, with the exception for the code that I inserted my own, which is similar to his, because, well...it was about learning from his code! I noticed that his Dataset - perhaps from the time filming this course - was slightly different from the version I used by the time I was taking the course, so I made some adjustments when it came the time to prepare the visualizations. It is my intention and plan to come back to this file to read it carefully, add my own comments, what I struggled with, and any "wow" moments the data might have given me.
+
 
 # Overview
 
-Welcome to my analysis of the data job market, focusing on data analyst roles. This project was created out of a desire to navigate and understand the job market more effectively. It delves into the top-paying and in-demand skills to help find optimal job opportunities for data analysts.
+Welcome to my analysis of the data job market, focusing on data analyst roles. This project was the result of taking the **Python for Data Analytics** created by [Luke Barousse](linkedin.com/in/luke-b) and [Kelly Adams](linkedin.com/in/kellyjianadams). The objective is to navigate and understand the job market for data positions more effectively. It delves into the top-paying and in-demand skills to help find optimal job opportunities for data analysts.
 
-The data sourced from [Luke Barousse's Python Course](https://lukebarousse.com/python) which provides a foundation for my analysis, containing detailed information on job titles, salaries, locations, and essential skills. Through a series of Python scripts, I explore key questions such as the most demanded skills, salary trends, and the intersection of demand and salary in data analytics.
+The data was sourced from [Luke Barousse's Python Course](https://lukebarousse.com/python), which provides a foundation for my analysis, containing detailed information on job titles, salaries, locations, and essential skills. Through a series of Python scripts, I explore key questions such as the most demanded skills, salary trends, and the intersection of demand and salary in data analytics.
 
 # The Questions
 
@@ -125,9 +125,12 @@ To find how skills are trending in 2023 for Data Analysts, I filtered data analy
 View my notebook with detailed steps here: [3_Skills_Trend](3_Skills_Trend.ipynb).
 
 ### Visualize Data
-```# For the plotting, we only want the first 7 rows (I'm adding 2 columns because Luke's dataset is looking differenr from mine...Power BI is in 7th place). For this we're going to use the .iloc method 
-#  .iloc[:, :7] -> means all rows, but only 7 columns
-no_of_colums = 7
+```python
+# For the plotting, we only want the first rows (I've chosen 7 columns because Power BI is in 7th place and I find it relevant it include it). 
+
+# For this we're going to use the .iloc method 
+#  .iloc[:, :no_of_colums] -> means all rows, but only the number of columns I specify in the no_of_columns variable
+nno_of_colums = 7
 df_plot = df_DA_US_percent.iloc[:, :no_of_colums]
 
 sns.lineplot(data=df_plot, dashes=False, palette='tab10')
@@ -154,16 +157,6 @@ for i in range(no_of_colums):
 adjust_text(texts, arrowprops=dict(arrowstyle='->', color='gray'))
 
 plt.show()
-```python
-
-from matplotlib.ticker import PercentFormatter
-
-df_plot = df_DA_US_percent.iloc[:, :5]
-sns.lineplot(data=df_plot, dashes=False, legend='full', palette='tab10')
-
-plt.gca().yaxis.set_major_formatter(PercentFormatter(decimals=0))
-
-plt.show()
 
 ```
 
@@ -173,9 +166,9 @@ plt.show()
 *Bar graph visualizing the trending top skills for data analysts in the US in 2023.*
 
 ### Insights:
-- SQL remains the most consistently demanded skill throughout the year, although it shows a gradual decrease in demand.
-- Excel experienced a significant increase in demand starting around September, surpassing both Python and Tableau by the end of the year.
-- Both Python and Tableau show relatively stable demand throughout the year with some fluctuations but remain essential skills for data analysts. Power BI, while less demanded compared to the others, shows a slight upward trend towards the year's end.
+- **SQL** remains the most consistently demanded skill throughout the year, although it shows a gradual decrease in demand.
+- **Excel** experienced a significant increase in demand starting around September, surpassing both Python and Tableau by the end of the year.
+- Both **Python** and **Tableau** show relatively stable demand throughout the year with some fluctuations but remain essential skills for data analysts. Power BI, while less demanded compared to the others, shows a slight upward trend towards the year's end.
 
 ## 3. How well do jobs and skills pay for Data Analysts?
 
@@ -215,7 +208,7 @@ plt.show()
 
 ### Highest Paid & Most Demanded Skills for Data Analysts
 
-Next, I narrowed my analysis and focused only on data analyst roles. I looked at the highest-paid skills and the most in-demand skills. I used two bar charts to showcase these.
+Next, I narrowed my analysis and focused only on **data analyst** roles. I looked at the highest-paid skills and the most in-demand skills. I used two bar charts to showcase these.
 
 #### Visualize Data
 
@@ -260,9 +253,9 @@ Here's the breakdown of the highest-paid & most in-demand skills for data analys
 
 - The top graph shows specialized technical skills like `dplyr`, `Bitbucket`, and `Gitlab` are associated with higher salaries, some reaching up to $200K, suggesting that advanced technical proficiency can increase earning potential.
 
-- The bottom graph highlights that foundational skills like `Excel`, `PowerPoint`, and `SQL` are the most in-demand, even though they may not offer the highest salaries. This demonstrates the importance of these core skills for employability in data analysis roles.
+- The bottom graph highlights that foundational skills like `Excel`, `PowerPoint`, and `SQL` are among the most in-demand, even though they may not offer the highest salaries. This demonstrates the importance of these core skills for employability in data analysis roles.
 
-- There's a clear distinction between the skills that are highest paid and those that are most in-demand. Data analysts aiming to maximize their career potential should consider developing a diverse skill set that includes both high-paying specialized skills and widely demanded foundational skills.
+- There's a clear distinction between the skills that are highest paid and those that are most in-demand. **Data analysts aiming to maximize their career potential should consider developing a diverse skill set that includes both high-paying specialized skills and widely demanded foundational skills**.
 
 ## 4. What are the most optimal skills to learn for Data Analysts?
 
